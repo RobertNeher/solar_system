@@ -1,0 +1,68 @@
+{
+    "planets": [
+        {
+            "Mercury": {
+                "color": "#ff9e9e9e",
+                "radius": 8.0,
+                "orbitalRadius": 50.0,
+                "speed": 1.0
+            }
+        },
+        {
+            "Venus": {
+                "color": "#ffffcc8",
+                "radius": 12.0,
+                "orbitalRadius": 75.0,
+                "speed": 0.8
+            }
+        },
+        {
+            "Earth": {
+                "color": "#ff2196f3",
+                "radius": 14.0,
+                "orbitalRadius": 100.0,
+                "speed": 0.6
+            }
+        },
+        {
+            "Mars": {
+                "color": "#ff32f2f",
+                "radius": 10.0,
+                "orbitalRadius": 130.0,
+                "speed": 0.4
+            }
+        },
+        {
+            "Jupiter": {
+                "color": "#fff57c00",
+                "radius": 25.0,
+                "orbitalRadius": 180.0,
+                "speed": 0.2
+            }
+        },
+        {
+            "Saturn": {
+                "color": "#fffbc02d0",
+                "radius": 22.0,
+                "orbitalRadius": 230.0,
+                "speed": 0.15
+            }
+        },
+        {
+            "Uranus": {
+                "color": "#ff4fc3f7",
+                "radius": 18.0,
+                "orbitalRadius": 270.0,
+                "speed": 0.1
+            }
+        },
+        {
+            "Neptun": {
+                "color": "#ff1976d2",
+                "radius": 18.0,
+                "orbitalRadius": 310.0,
+                "speed": 0.08
+            }
+        }
+    ]
+}

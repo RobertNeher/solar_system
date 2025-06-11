@@ -1,0 +1,22 @@
+{
+  "version": "0.1.0",
+  "settings": {
+    "clockSize": 600,
+    "fontSizeActive": 50,
+    "fontSizeInActive": 50,
+    "backgroundColorOrientation": "CENTER",
+    "backgroundColor":[
+        "#ff9933",
+        "#ffbf80",
+        "#ffdb99"
+    ],
+    "fontActive": "RobotoFlex",
+    "fontInActive": "Rubik Vinyl",
+    "charColorActive": "#ffffff",
+    "charShadowColorActive": "#b3b3b3",
+    "charColorInActive": "#999999",
+    "charShadowColorInActive": "#",
+    "debugMode": true,
+    "debugPeriod": 500
+  }
+}
