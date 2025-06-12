@@ -1,22 +1,15 @@
 {
   "version": "0.1.0",
   "settings": {
-    "clockSize": 600,
-    "fontSizeActive": 50,
-    "fontSizeInActive": 50,
-    "backgroundColorOrientation": "CENTER",
-    "backgroundColor":[
-        "#ff9933",
-        "#ffbf80",
-        "#ffdb99"
-    ],
-    "fontActive": "RobotoFlex",
-    "fontInActive": "Rubik Vinyl",
-    "charColorActive": "#ffffff",
-    "charShadowColorActive": "#b3b3b3",
-    "charColorInActive": "#999999",
-    "charShadowColorInActive": "#",
+    "title": "Solar System simulation",
+    "canvasSize": 600,
+    "fontSize": 20,
+    "spaceBackgroundColor": "#ff00004d",
+    "sunColor": "#ffffcc00",
+    "sunSize": 30,
+    "font": "RobotoFlex",
+    "fontColor": "#ffffff",
     "debugMode": true,
-    "debugPeriod": 500
+    "animationDuration": 500
   }
 }

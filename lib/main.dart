@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:solar_system/src/helper.dart';
 
 void main() {
   runApp(const SolarSystemApp());
@@ -46,24 +48,29 @@ class _SolarSystemPageState extends State<SolarSystemPage>
   late AnimationController _controller;
 
   Future<void> _loadSettings() async {
+    String pathPrefix = '';
+    if (kIsWeb) {
+      pathPrefix = '';
+    } else {
+      pathPrefix = 'assets/';
+    }
     widget.prefs = await SharedPreferences.getInstance();
     widget.language = widget.prefs.getString('language') ?? 'de';
-
-    String jsonData = await rootBundle.loadString('settings/settings.json');
+    String jsonData = await rootBundle.loadString(
+      '${pathPrefix}settings/settings.json',
+    );
     widget.settings = json.decode(jsonData)['settings'];
 
-    jsonData = await rootBundle.loadString('settings/planets.json');
+    jsonData = await rootBundle.loadString(
+      '${pathPrefix}settings/planets.json',
+    );
     widget.planets = json.decode(jsonData)['planets'];
-    print(widget.planets);
+    print('_load:${widget.planets.length}');
   }
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 2000),
-      vsync: this,
-    )..repeat();
   }
 
   @override
@@ -82,7 +89,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
 
   @override
   Widget build(BuildContext context) {
-    FutureBuilder<void>(
+    return FutureBuilder<void>(
       future: _loadSettings(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -94,11 +101,19 @@ class _SolarSystemPageState extends State<SolarSystemPage>
           );
         }
         if (snapshot.connectionState == ConnectionState.done) {
+          _controller = AnimationController(
+            duration: Duration(
+              milliseconds: widget.settings['animationDuration'],
+            ),
+            vsync: this,
+          )..repeat();
+          widget.title = widget.settings['title'];
           return Scaffold(
-            backgroundColor:
-                Colors.black, // Schwarzer Hintergrund für den Weltraum
+            backgroundColor: colorFromString(
+              widget.settings['spaceBackgroundColor'],
+            ),
             appBar: AppBar(
-              title: const Text('Platzhalter'),
+              title: Text(widget.title),
               backgroundColor: Colors.transparent,
               elevation: 0,
             ),
@@ -109,6 +124,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                   return CustomPaint(
                     painter: SolarSystemPainter(
                       _controller.value,
+                      widget.settings,
                       widget.planets,
                     ),
                     child: Container(),
@@ -132,7 +148,6 @@ class _SolarSystemPageState extends State<SolarSystemPage>
         }
       },
     );
-    return Container();
   }
 }
 
@@ -140,50 +155,39 @@ class _SolarSystemPageState extends State<SolarSystemPage>
 class SolarSystemPainter extends CustomPainter {
   final double
   animationValue; // Der aktuelle Wert des Animationscontrollers (0.0 bis 1.0)
-  final List<Map<String, dynamic>> planets; // Liste der Planeten zum Zeichnen
-
-  SolarSystemPainter(this.animationValue, this.planets);
+  final List<Map<String, dynamic>> planets;
+  final Map<String, dynamic> settings; // Liste der Planeten zum Zeichnen
+  SolarSystemPainter(this.animationValue, this.settings, this.planets);
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Der Mittelpunkt des Bildschirms ist der Ort der Sonne.
     final Offset center = Offset(size.width / 2, size.height / 2);
 
     // Zeichne die Sonne.
-    final sunPaint = Paint()..color = Colors.yellow;
-    canvas.drawCircle(
-      center,
-      30.0,
-      sunPaint,
-    ); // Die Sonne ist ein großer gelber Kreis
+    final sunPaint = Paint()..color = colorFromString(settings['sunColor']);
+    canvas.drawCircle(center, settings['sunSize'], sunPaint);
 
-    // Zeichne jeden Planeten und seine Umlaufbahn.
+    // Draw each planet on the list
     for (var planet in planets) {
       final double orbitalRadius = planet['orbitalRadius'];
       final Color planetColor = planet['color'];
       final double planetRadius = planet['radius'];
       final double speed = planet['speed'];
 
-      // Zeichne die Umlaufbahn.
+      // Draw orbits
       final orbitPaint = Paint()
-        ..color = Colors
-            .white12 // Dezente weiße Linie
-        ..style = PaintingStyle
-            .stroke // Nur der Umriss
-        ..strokeWidth = 0.5; // Dünne Linie
+        ..color = Colors.white12
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.5;
       canvas.drawCircle(center, orbitalRadius, orbitPaint);
 
-      // Berechne den aktuellen Winkel des Planeten basierend auf der Animation und Geschwindigkeit.
-      // 2 * math.pi ist ein voller Kreis in Radiant.
       final double angle =
           (animationValue * speed * 2 * math.pi) % (2 * math.pi);
 
-      // Berechne die Position des Planeten auf seiner Umlaufbahn.
       final double planetX = center.dx + orbitalRadius * math.cos(angle);
       final double planetY = center.dy + orbitalRadius * math.sin(angle);
       final Offset planetPosition = Offset(planetX, planetY);
 
-      // Zeichne den Planeten.
       final planetPaint = Paint()..color = planetColor;
       canvas.drawCircle(planetPosition, planetRadius, planetPaint);
     }
@@ -191,7 +195,6 @@ class SolarSystemPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant SolarSystemPainter oldDelegate) {
-    // Neuzeichnen, wenn sich der Animationswert ändert.
     return oldDelegate.animationValue != animationValue;
   }
 }
