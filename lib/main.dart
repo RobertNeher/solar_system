@@ -4,7 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solar_system/src/helper.dart';
 
 void main() {
@@ -31,8 +31,8 @@ class SolarSystemApp extends StatelessWidget {
 
 // ignore: must_be_immutable
 class SolarSystemPage extends StatefulWidget {
-  late SharedPreferences prefs;
-  late String language = '';
+  // late SharedPreferences prefs;
+  // late String language = '';
   String title = '';
   List<Map<String, dynamic>> planets = [];
   Map<String, dynamic> settings = {};
@@ -54,8 +54,8 @@ class _SolarSystemPageState extends State<SolarSystemPage>
     } else {
       pathPrefix = 'assets/';
     }
-    widget.prefs = await SharedPreferences.getInstance();
-    widget.language = widget.prefs.getString('language') ?? 'de';
+    // widget.prefs = await SharedPreferences.getInstance();
+    // widget.language = widget.prefs.getString('language') ?? 'de';
     String jsonData = await rootBundle.loadString(
       '${pathPrefix}settings/settings.json',
     );
@@ -64,8 +64,9 @@ class _SolarSystemPageState extends State<SolarSystemPage>
     jsonData = await rootBundle.loadString(
       '${pathPrefix}settings/planets.json',
     );
-    widget.planets = json.decode(jsonData)['planets'];
-    print('_load:${widget.planets.length}');
+    widget.planets = List<Map<String, dynamic>>.from(
+      json.decode(jsonData)['planets'],
+    );
   }
 
   @override
@@ -73,12 +74,12 @@ class _SolarSystemPageState extends State<SolarSystemPage>
     super.initState();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.paused) {
-      await widget.prefs.setString('language', widget.language);
-    }
-  }
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   if (state == AppLifecycleState.paused) {
+  //     await widget.prefs.setString('language', widget.language);
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -108,6 +109,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
             vsync: this,
           )..repeat();
           widget.title = widget.settings['title'];
+
           return Scaffold(
             backgroundColor: colorFromString(
               widget.settings['spaceBackgroundColor'],
@@ -169,11 +171,11 @@ class SolarSystemPainter extends CustomPainter {
 
     // Draw each planet on the list
     for (var planet in planets) {
-      final double orbitalRadius = planet['orbitalRadius'];
-      final Color planetColor = planet['color'];
-      final double planetRadius = planet['radius'];
-      final double speed = planet['speed'];
-
+      print(planet);
+      final double orbitalRadius = planet['orbitalRadius'].toDouble();
+      final Color planetColor = colorFromString(planet['color']);
+      final double planetRadius = planet['radius'].toDouble();
+      final double speed = planet['speed'].toDouble();
       // Draw orbits
       final orbitPaint = Paint()
         ..color = Colors.white12
