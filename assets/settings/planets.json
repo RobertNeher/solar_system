@@ -19,7 +19,15 @@
             "color": "#ff2196f3",
             "radius": 14.0,
             "orbitalRadius": 100.0,
-            "speed": 0.6
+            "speed": 0.6,
+            "moons": [
+                {
+                    "name": "Moon",
+                    "radius": "",
+                    "speed": 1.0,
+                    "orbitRadius": 16.0
+                }
+            ]
         },
         {
             "name": "Mars",
