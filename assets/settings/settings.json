@@ -7,9 +7,12 @@
     "spaceBackgroundColor": "#ff00004d",
     "sunColor": "#ffffcc00",
     "sunSize": 30,
-    "font": "RobotoFlex",
-    "fontColor": "#ffffff",
+    "planetName": {
+      "font": "RobotoFlex",
+      "fontColor": "#f0f2f2f2",
+      "fontSize": 8
+    },
     "debugMode": true,
-    "animationDuration": 30000
+    "animationDuration": 3000
   }
 }

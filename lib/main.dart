@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +42,7 @@ class SolarSystemPage extends StatefulWidget {
 
 class _SolarSystemPageState extends State<SolarSystemPage>
     with SingleTickerProviderStateMixin {
+  double _orbitValue = 0;
   late AnimationController _controller;
 
   Future<void> _loadSettings() async {
@@ -68,6 +68,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
 
   @override
   void initState() {
+    _orbitValue = 0;
     super.initState();
   }
 
@@ -75,6 +76,15 @@ class _SolarSystemPageState extends State<SolarSystemPage>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _update() {
+    if (_controller.status == AnimationStatus.forward ||
+        _controller.status == AnimationStatus.reverse) {
+      _orbitValue +=
+          ((_controller.upperBound - _controller.lowerBound) /
+          widget.settings['animationDuration']);
+    }
   }
 
   @override
@@ -91,13 +101,17 @@ class _SolarSystemPageState extends State<SolarSystemPage>
           );
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          _controller = AnimationController(
-            duration: Duration(
-              milliseconds: widget.settings['animationDuration'],
-            ),
-            vsync: this,
-          )..repeat();
           widget.title = widget.settings['title'];
+
+          _controller =
+              AnimationController(
+                  duration: Duration(
+                    milliseconds: widget.settings['animationDuration'],
+                  ),
+                  vsync: this,
+                )
+                ..repeat(reverse: false)
+                ..addListener(_update);
 
           return Scaffold(
             backgroundColor: colorFromString(
@@ -115,6 +129,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                   return CustomPaint(
                     painter: SolarSystemPainter(
                       _controller.value,
+                      _orbitValue,
                       widget.settings,
                       widget.planets,
                     ),

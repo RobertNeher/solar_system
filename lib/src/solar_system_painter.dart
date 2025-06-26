@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:solar_system/src/helper.dart';
 
 class SolarSystemPainter extends CustomPainter {
-  final double
-  animationValue; // Der aktuelle Wert des Animationscontrollers (0.0 bis 1.0)
+  final double animationValue;
+  final double orbitalValue;
   final List<Map<String, dynamic>> planets;
   final Map<String, dynamic> settings; // Liste der Planeten zum Zeichnen
-  SolarSystemPainter(this.animationValue, this.settings, this.planets);
+  SolarSystemPainter(
+    this.animationValue,
+    this.orbitalValue,
+    this.settings,
+    this.planets,
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -31,19 +36,26 @@ class SolarSystemPainter extends CustomPainter {
         ..strokeWidth = 0.5;
       canvas.drawCircle(center, orbitalRadius, orbitPaint);
 
-      final double angle =
-          (animationValue * speed * 2 * math.pi) % (2 * math.pi);
+      final double angle = (orbitalValue * speed * 2 * math.pi) % (2 * math.pi);
 
       final double planetX = center.dx + orbitalRadius * math.cos(angle);
       final double planetY = center.dy + orbitalRadius * math.sin(angle);
       final Offset planetPosition = Offset(planetX, planetY);
-
-      final planetPaint = Paint()..color = planetColor;
+      final Paint planetPaint = Paint()..color = planetColor;
+      final TextStyle planetNameStyle = TextStyle(
+        fontFamily: settings['planetName']['font'],
+        color: colorFromString(settings['planetName']['fontColor']),
+        fontSize: settings['planetName']['fontSize'],
+      );
       canvas.drawCircle(planetPosition, planetRadius, planetPaint);
-      TextSpan planetName = TextSpan(text: planet['name']);
+      TextSpan planetName = TextSpan(
+        text: planet['name'],
+        style: planetNameStyle,
+      );
       TextPainter namePainter = TextPainter(
         text: planetName,
-        textAlign: TextAlign.center,
+        textAlign: TextAlign.left,
+        textDirection: TextDirection.ltr,
       );
       namePainter.layout();
       namePainter.paint(canvas, planetPosition);
