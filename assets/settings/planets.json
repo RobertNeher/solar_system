@@ -23,7 +23,7 @@
         },
         {
             "name": "Mars",
-            "color": "#ff32f2f",
+            "color": "#0FF32D69",
             "radius": 10.0,
             "orbitalRadius": 130.0,
             "speed": 0.4
