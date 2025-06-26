@@ -3,14 +3,24 @@
   "settings": {
     "title": "Solar System simulation",
     "canvasSize": 600,
-    "fontSize": 20,
     "spaceBackgroundColor": "#ff00004d",
-    "sunColor": "#ffffcc00",
-    "sunSize": 30,
+    "sun": {
+      "name": "Sun",
+      "fontSize": 15.0,
+      "font": "RobotoFlex",
+      "fontColor": "#ff000000",
+      "color": "#ffffcc00",
+      "radius": 30.0
+    },
+    "orbits": {
+      "visible": true,
+      "width": 0.5,
+      "color": "#80808080"
+    },
     "planetName": {
       "font": "RobotoFlex",
       "fontColor": "#f0f2f2f2",
-      "fontSize": 8
+      "fontSize": 8.0
     },
     "debugMode": true,
     "animationDuration": 3000
