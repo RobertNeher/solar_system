@@ -10,6 +10,6 @@
     "font": "RobotoFlex",
     "fontColor": "#ffffff",
     "debugMode": true,
-    "animationDuration": 500
+    "animationDuration": 30000
   }
 }

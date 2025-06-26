@@ -4,8 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solar_system/src/helper.dart';
+import 'package:solar_system/src/solar_system_painter.dart';
 
 void main() {
   runApp(const SolarSystemApp());
@@ -31,8 +31,6 @@ class SolarSystemApp extends StatelessWidget {
 
 // ignore: must_be_immutable
 class SolarSystemPage extends StatefulWidget {
-  // late SharedPreferences prefs;
-  // late String language = '';
   String title = '';
   List<Map<String, dynamic>> planets = [];
   Map<String, dynamic> settings = {};
@@ -44,7 +42,7 @@ class SolarSystemPage extends StatefulWidget {
 }
 
 class _SolarSystemPageState extends State<SolarSystemPage>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   Future<void> _loadSettings() async {
@@ -54,8 +52,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
     } else {
       pathPrefix = 'assets/';
     }
-    // widget.prefs = await SharedPreferences.getInstance();
-    // widget.language = widget.prefs.getString('language') ?? 'de';
+
     String jsonData = await rootBundle.loadString(
       '${pathPrefix}settings/settings.json',
     );
@@ -74,16 +71,8 @@ class _SolarSystemPageState extends State<SolarSystemPage>
     super.initState();
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   if (state == AppLifecycleState.paused) {
-  //     await widget.prefs.setString('language', widget.language);
-  //   }
-  // }
-
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
   }
@@ -150,53 +139,5 @@ class _SolarSystemPageState extends State<SolarSystemPage>
         }
       },
     );
-  }
-}
-
-// CustomPainter zum Zeichnen des Sonnensystems.
-class SolarSystemPainter extends CustomPainter {
-  final double
-  animationValue; // Der aktuelle Wert des Animationscontrollers (0.0 bis 1.0)
-  final List<Map<String, dynamic>> planets;
-  final Map<String, dynamic> settings; // Liste der Planeten zum Zeichnen
-  SolarSystemPainter(this.animationValue, this.settings, this.planets);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Offset center = Offset(size.width / 2, size.height / 2);
-
-    // Zeichne die Sonne.
-    final sunPaint = Paint()..color = colorFromString(settings['sunColor']);
-    canvas.drawCircle(center, settings['sunSize'], sunPaint);
-
-    // Draw each planet on the list
-    for (var planet in planets) {
-      print(planet);
-      final double orbitalRadius = planet['orbitalRadius'].toDouble();
-      final Color planetColor = colorFromString(planet['color']);
-      final double planetRadius = planet['radius'].toDouble();
-      final double speed = planet['speed'].toDouble();
-      // Draw orbits
-      final orbitPaint = Paint()
-        ..color = Colors.white12
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.5;
-      canvas.drawCircle(center, orbitalRadius, orbitPaint);
-
-      final double angle =
-          (animationValue * speed * 2 * math.pi) % (2 * math.pi);
-
-      final double planetX = center.dx + orbitalRadius * math.cos(angle);
-      final double planetY = center.dy + orbitalRadius * math.sin(angle);
-      final Offset planetPosition = Offset(planetX, planetY);
-
-      final planetPaint = Paint()..color = planetColor;
-      canvas.drawCircle(planetPosition, planetRadius, planetPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant SolarSystemPainter oldDelegate) {
-    return oldDelegate.animationValue != animationValue;
   }
 }
