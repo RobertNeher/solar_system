@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:solar_system/src/helper.dart';
 import 'package:solar_system/src/solar_system_painter.dart';
+import 'package:solar_system/src/stellar_background.dart';
 
 void main() {
   runApp(const SolarSystemApp());
@@ -20,7 +21,7 @@ class SolarSystemApp extends StatelessWidget {
       title: title,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: getMaterialColor(Colors.white),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: SolarSystemPage(title: title),
@@ -41,8 +42,9 @@ class SolarSystemPage extends StatefulWidget {
 }
 
 class _SolarSystemPageState extends State<SolarSystemPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   double _orbitValue = 0;
+  List<Widget> solarSystem = <Widget>[];
   late AnimationController _controller;
 
   Future<void> _loadSettings() async {
@@ -113,31 +115,51 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                 ..repeat(reverse: false)
                 ..addListener(_update);
 
+          solarSystem.addAll(
+            stellarBackground(
+              MediaQuery.of(context).size.height,
+              widget.settings['stellarBackground'],
+            ),
+          );
+          solarSystem.add(
+            AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return CustomPaint(
+                  painter: SolarSystemPainter(
+                    _controller.value,
+                    _orbitValue,
+                    widget.settings,
+                    widget.planets,
+                  ),
+                  child: Container(),
+                );
+              },
+            ),
+          );
+
           return Scaffold(
             backgroundColor: colorFromString(
               widget.settings['spaceBackgroundColor'],
             ),
             appBar: AppBar(
-              title: Text(widget.title),
+              centerTitle: true,
+              title: Text(
+                widget.title,
+                style: TextStyle(
+                  fontFamily: widget.settings['font'],
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: complimentaryColor(
+                    colorFromString(widget.settings['spaceBackgroundColor']),
+                  ),
+                ),
+              ),
               backgroundColor: Colors.transparent,
               elevation: 0,
             ),
-            body: Center(
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return CustomPaint(
-                    painter: SolarSystemPainter(
-                      _controller.value,
-                      _orbitValue,
-                      widget.settings,
-                      widget.planets,
-                    ),
-                    child: Container(),
-                  );
-                },
-              ),
-            ),
+            body: Stack(alignment: Alignment.center, children: solarSystem),
+            bottomSheet: Container(height: 30, color: Colors.green),
           );
         } else {
           return const Center(

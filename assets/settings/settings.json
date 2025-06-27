@@ -2,6 +2,7 @@
   "version": "0.1.0",
   "settings": {
     "title": "Solar System simulation",
+    "font": "Roboto",
     "canvasSize": 600,
     "spaceBackgroundColor": "#ff00004d",
     "sun": {
@@ -11,6 +12,13 @@
       "fontColor": "#ff000000",
       "color": "#ffffcc00",
       "radius": 30.0
+    },
+    "stellarBackground": {
+      "starBackground":  true,
+      "starColor": "#fffffff0",
+      "maxStars": 400,
+      "starSize": 5,
+      "starEdges": 5
     },
     "orbits": {
       "visible": true,
