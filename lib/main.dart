@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:solar_system/info_bar.dart';
 import 'package:solar_system/src/helper.dart';
 import 'package:solar_system/src/solar_system_painter.dart';
 import 'package:solar_system/src/stellar_background.dart';
@@ -159,7 +160,11 @@ class _SolarSystemPageState extends State<SolarSystemPage>
               elevation: 0,
             ),
             body: Stack(alignment: Alignment.center, children: solarSystem),
-            bottomSheet: Container(height: 30, color: Colors.green),
+            bottomSheet: InfoBar(
+              yearEquivalent: widget.settings['animationDuration'],
+              dayEquivalent: _controller.value,
+              settings: widget.settings["infoBar"],
+            ),
           );
         } else {
           return const Center(

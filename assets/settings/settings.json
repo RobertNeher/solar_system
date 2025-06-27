@@ -30,6 +30,14 @@
       "fontColor": "#f0f2f2f2",
       "fontSize": 8.0
     },
+    "infoBar": {
+      "color": "#7f000000",
+      "height": 80,
+      "width": 200,
+      "font": "Roboto",
+      "fontSize": 10,
+      "fontColor": "#ffffffff"
+    },
     "debugMode": true,
     "animationDuration": 3000
   }
