@@ -24,7 +24,6 @@ flutter:
   assets:
     - 'assets/settings/settings.json'
     - 'assets/settings/planets.json'
-    - assets/icons/
 
   # fonts:
   #   - family: Schyler
