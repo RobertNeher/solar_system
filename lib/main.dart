@@ -116,10 +116,10 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                 ..repeat(reverse: false)
                 ..addListener(_update);
 
-          solarSystem.addAll(
-            stellarBackground(
-              MediaQuery.of(context).size.height,
-              widget.settings['stellarBackground'],
+          solarSystem.add(
+            StellarBackground(
+              windowSize: MediaQuery.of(context).size.height,
+              settings: widget.settings['stellarBackground'],
             ),
           );
           solarSystem.add(
