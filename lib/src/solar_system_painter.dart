@@ -33,17 +33,17 @@ class SolarSystemPainter extends CustomPainter {
       text: settings['sun']['name'],
       style: sunNameStyle,
     );
-    TextPainter namePainter = TextPainter(
+    TextPainter planetNamePainter = TextPainter(
       text: sunName,
       textAlign: TextAlign.left,
       textDirection: TextDirection.ltr,
     );
-    namePainter.layout();
-    namePainter.paint(
+    planetNamePainter.layout();
+    planetNamePainter.paint(
       canvas,
       Offset(
-        center.dx - namePainter.width / 2,
-        center.dy - namePainter.height / 2,
+        center.dx - planetNamePainter.width / 2,
+        center.dy - planetNamePainter.height / 2,
       ),
     );
 
@@ -53,6 +53,21 @@ class SolarSystemPainter extends CustomPainter {
       final Color planetColor = colorFromString(planet['color']);
       final double planetRadius = planet['radius'].toDouble();
       final double speed = planet['speed'].toDouble();
+      final TextStyle planetNameStyle = TextStyle(
+        fontFamily: settings['planetName']['font'],
+        color: colorFromString(settings['planetName']['fontColor']),
+        fontSize: settings['planetName']['fontSize'].toDouble(),
+      );
+      final TextStyle infoStyle = TextStyle(
+        fontFamily: settings['infoBar']['font'],
+        color: colorFromString(settings['infoBar']['fontColor']),
+        fontSize: settings['infoBar']['fontSize'].toDouble(),
+      );
+      final double totalDaysInYear = DateTime(
+        DateTime.now().year,
+        12,
+        31,
+      ).difference(DateTime(DateTime.now().year, 1, 1)).inDays.toDouble();
 
       if (settings['orbits']['visible']) {
         // Draw orbits
@@ -67,29 +82,65 @@ class SolarSystemPainter extends CustomPainter {
       final double planetY = center.dy + orbitalRadius * math.sin(angle);
       final Offset planetPosition = Offset(planetX, planetY);
       final Paint planetPaint = Paint()..color = planetColor;
-      final TextStyle planetNameStyle = TextStyle(
-        fontFamily: settings['planetName']['font'],
-        color: colorFromString(settings['planetName']['fontColor']),
-        fontSize: settings['planetName']['fontSize'].toDouble(),
-      );
+
       canvas.drawCircle(planetPosition, planetRadius, planetPaint);
       TextSpan planetName = TextSpan(
         text: planet['name'],
         style: planetNameStyle,
       );
-      TextPainter namePainter = TextPainter(
+      TextPainter planetNamePainter = TextPainter(
         text: planetName,
         textAlign: TextAlign.left,
         textDirection: TextDirection.ltr,
       );
-      namePainter.layout();
-      namePainter.paint(
+      planetNamePainter.layout();
+      planetNamePainter.paint(
         canvas,
         Offset(
-          planetPosition.dx - namePainter.width / 2,
-          planetPosition.dy - namePainter.height / 2,
+          planetPosition.dx - planetNamePainter.width / 2,
+          planetPosition.dy - planetNamePainter.height / 2,
         ),
       );
+      TextSpan infoName = TextSpan(
+        text: 'Year equivalent\nDay equivalent\nDay of year',
+        style: infoStyle,
+      );
+      TextPainter infoPainter = TextPainter(
+        text: infoName,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.ltr,
+      );
+      infoPainter.layout();
+      infoPainter.paint(canvas, Offset(size.width - 225, size.height - 50));
+
+      TextSpan infoNumbers = TextSpan(
+        text:
+            '${settings["animationDuration"]}\n' +
+            '${(settings["animationDuration"] / totalDaysInYear).toStringAsPrecision(5)}\n' +
+            // '${(orbitalValue * settings["animationDuration"] / totalDaysInYear).toStringAsPrecision(5)}',
+            '${(orbitalValue * totalDaysInYear).toStringAsPrecision(5)}',
+        style: infoStyle,
+      );
+      infoPainter = TextPainter(
+        text: infoNumbers,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.ltr,
+      );
+      infoPainter.layout();
+      infoPainter.paint(canvas, Offset(size.width - 150, size.height - 50));
+
+      infoName = TextSpan(
+        text:
+            'millseconds = Earth year\nmilliseconds an Earth day \nEarth day of year',
+        style: infoStyle,
+      );
+      infoPainter = TextPainter(
+        text: infoName,
+        textAlign: TextAlign.left,
+        textDirection: TextDirection.ltr,
+      );
+      infoPainter.layout();
+      infoPainter.paint(canvas, Offset(size.width - 100, size.height - 50));
     }
   }
 

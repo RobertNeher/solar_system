@@ -17,8 +17,6 @@ class InfoBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<TableRow> rows = [];
-
     final double barWidth =
         settings['width'] > MediaQuery.of(context).size.width
         ? MediaQuery.of(context).size.width
@@ -34,7 +32,7 @@ class InfoBar extends StatelessWidget {
       DateTime.now().year,
       12,
       31,
-    ).day.toDouble();
+    ).difference(DateTime(DateTime.now().year, 1, 1)).inDays.toDouble();
 
     return Container(
       color: colorFromString(settings['color']),
@@ -61,7 +59,7 @@ class InfoBar extends StatelessWidget {
               ),
               TableCell(
                 child: Text(
-                  yearEquivalent.toString(),
+                  yearEquivalent.toStringAsPrecision(4),
                   style: cellStyle,
                   textAlign: TextAlign.right,
                 ),

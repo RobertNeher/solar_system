@@ -16,7 +16,7 @@
     "stellarBackground": {
       "starBackground":  true,
       "starColor": "#fffffff0",
-      "maxStars": 400,
+      "maxStars": 100,
       "starSize": 5,
       "starEdges": 5
     },
