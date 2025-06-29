@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:solar_system/info_box.dart';
 import 'package:solar_system/src/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,16 +59,6 @@ class SolarSystemPainter extends CustomPainter {
         color: colorFromString(settings['planetName']['fontColor']),
         fontSize: settings['planetName']['fontSize'].toDouble(),
       );
-      final TextStyle infoStyle = TextStyle(
-        fontFamily: settings['infoBar']['font'],
-        color: colorFromString(settings['infoBar']['fontColor']),
-        fontSize: settings['infoBar']['fontSize'].toDouble(),
-      );
-      final double totalDaysInYear = DateTime(
-        DateTime.now().year,
-        12,
-        31,
-      ).difference(DateTime(DateTime.now().year, 1, 1)).inDays.toDouble();
 
       if (settings['orbits']['visible']) {
         // Draw orbits
@@ -101,46 +92,7 @@ class SolarSystemPainter extends CustomPainter {
           planetPosition.dy - planetNamePainter.height / 2,
         ),
       );
-      TextSpan infoName = TextSpan(
-        text: 'Year equivalent\nDay equivalent\nDay of year',
-        style: infoStyle,
-      );
-      TextPainter infoPainter = TextPainter(
-        text: infoName,
-        textAlign: TextAlign.right,
-        textDirection: TextDirection.ltr,
-      );
-      infoPainter.layout();
-      infoPainter.paint(canvas, Offset(size.width - 225, size.height - 50));
-
-      TextSpan infoNumbers = TextSpan(
-        text:
-            '${settings["animationDuration"]}\n' +
-            '${(settings["animationDuration"] / totalDaysInYear).toStringAsPrecision(5)}\n' +
-            // '${(orbitalValue * settings["animationDuration"] / totalDaysInYear).toStringAsPrecision(5)}',
-            '${(orbitalValue * totalDaysInYear).toStringAsPrecision(5)}',
-        style: infoStyle,
-      );
-      infoPainter = TextPainter(
-        text: infoNumbers,
-        textAlign: TextAlign.right,
-        textDirection: TextDirection.ltr,
-      );
-      infoPainter.layout();
-      infoPainter.paint(canvas, Offset(size.width - 150, size.height - 50));
-
-      infoName = TextSpan(
-        text:
-            'millseconds = Earth year\nmilliseconds an Earth day \nEarth day of year',
-        style: infoStyle,
-      );
-      infoPainter = TextPainter(
-        text: infoName,
-        textAlign: TextAlign.left,
-        textDirection: TextDirection.ltr,
-      );
-      infoPainter.layout();
-      infoPainter.paint(canvas, Offset(size.width - 100, size.height - 50));
+      addInfo(canvas, size, orbitalValue, settings);
     }
   }
 

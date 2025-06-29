@@ -160,11 +160,6 @@ class _SolarSystemPageState extends State<SolarSystemPage>
               elevation: 0,
             ),
             body: Stack(alignment: Alignment.center, children: solarSystem),
-            bottomSheet: InfoBox(
-              yearEquivalent: widget.settings['animationDuration'],
-              dayEquivalent: _controller.value,
-              settings: widget.settings["infoBar"],
-            ),
           );
         } else {
           return const Center(
