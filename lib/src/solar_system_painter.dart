@@ -20,15 +20,15 @@ class SolarSystemPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Offset center = Offset(size.width / 2, size.height / 2);
 
+    final sunPaint = Paint()..color = colorFromString(settings['sun']['color']);
+    canvas.drawCircle(center, settings['sun']['radius'].toDouble(), sunPaint);
+
     // Central star
     final TextStyle sunNameStyle = TextStyle(
       fontFamily: settings['sun']['font'],
       color: colorFromString(settings['sun']['fontColor']),
       fontSize: settings['sun']['fontSize'].toDouble(),
     );
-    final sunPaint = Paint()..color = colorFromString(settings['sun']['color']);
-    canvas.drawCircle(center, settings['sun']['radius'].toDouble(), sunPaint);
-
     TextSpan sunName = TextSpan(
       text: settings['sun']['name'],
       style: sunNameStyle,

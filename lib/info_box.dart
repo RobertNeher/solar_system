@@ -3,12 +3,12 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:solar_system/src/helper.dart';
 
-class InfoBar extends StatelessWidget {
+class InfoBox extends StatelessWidget {
   final double yearEquivalent;
   final double dayEquivalent;
   final Map<String, dynamic> settings;
 
-  const InfoBar({
+  const InfoBox({
     super.key,
     required this.yearEquivalent,
     required this.dayEquivalent,
@@ -17,8 +17,7 @@ class InfoBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<TableRow> rows = [];
-
+    print(this.dayEquivalent);
     final double barWidth =
         settings['width'] > MediaQuery.of(context).size.width
         ? MediaQuery.of(context).size.width
@@ -34,8 +33,8 @@ class InfoBar extends StatelessWidget {
       DateTime.now().year,
       12,
       31,
-    ).day.toDouble();
-
+    ).difference(DateTime(DateTime.now().year, 1, 1)).inDays.toDouble();
+    print(totalDaysInYear);
     return Container(
       color: colorFromString(settings['color']),
       width: barWidth,
@@ -86,7 +85,7 @@ class InfoBar extends StatelessWidget {
               ),
               TableCell(
                 child: Text(
-                  (yearEquivalent / totalDaysInYear).toStringAsPrecision(12),
+                  (yearEquivalent / totalDaysInYear).toStringAsPrecision(7),
                   style: cellStyle,
                 ),
               ),
@@ -106,13 +105,15 @@ class InfoBar extends StatelessWidget {
                 child: Text(
                   'Day of year',
                   style: cellStyle,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.left,
                 ),
               ),
               TableCell(
                 child: Text(
-                  (yearEquivalent / totalDaysInYear * dayEquivalent).toString(),
+                  (yearEquivalent / totalDaysInYear * dayEquivalent)
+                      .toStringAsPrecision(7),
                   style: cellStyle,
+                  textAlign: TextAlign.right,
                 ),
               ),
               TableCell(child: Container()),

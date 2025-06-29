@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:solar_system/info_bar.dart';
+import 'package:solar_system/info_box.dart';
 import 'package:solar_system/src/helper.dart';
 import 'package:solar_system/src/solar_system_painter.dart';
 import 'package:solar_system/src/stellar_background.dart';
@@ -44,7 +44,7 @@ class SolarSystemPage extends StatefulWidget {
 
 class _SolarSystemPageState extends State<SolarSystemPage>
     with TickerProviderStateMixin {
-  double _orbitValue = 0;
+  ValueNotifier<double> _orbitValue = ValueNotifier<double>(0);
   List<Widget> solarSystem = <Widget>[];
   late AnimationController _controller;
 
@@ -71,7 +71,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
 
   @override
   void initState() {
-    _orbitValue = 0;
+    _orbitValue = ValueNotifier<double>(0);
     super.initState();
   }
 
@@ -84,9 +84,11 @@ class _SolarSystemPageState extends State<SolarSystemPage>
   void _update() {
     if (_controller.status == AnimationStatus.forward ||
         _controller.status == AnimationStatus.reverse) {
-      _orbitValue +=
-          ((_controller.upperBound - _controller.lowerBound) /
-          widget.settings['animationDuration']);
+      _orbitValue = ValueNotifier<double>(
+        (_controller.upperBound - _controller.lowerBound) /
+                widget.settings['animationDuration'] +
+            _orbitValue.value,
+      );
     }
   }
 
@@ -129,7 +131,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                 return CustomPaint(
                   painter: SolarSystemPainter(
                     _controller.value,
-                    _orbitValue,
+                    _orbitValue.value,
                     widget.settings,
                     widget.planets,
                   ),
@@ -160,10 +162,16 @@ class _SolarSystemPageState extends State<SolarSystemPage>
               elevation: 0,
             ),
             body: Stack(alignment: Alignment.center, children: solarSystem),
-            bottomSheet: InfoBar(
-              yearEquivalent: widget.settings['animationDuration'],
-              dayEquivalent: _controller.value,
-              settings: widget.settings["infoBar"],
+            bottomSheet: ValueListenableBuilder<double>(
+              builder: (BuildContext context, double value, Widget? child) {
+                print(value);
+                return InfoBox(
+                  yearEquivalent: widget.settings['animationDuration'],
+                  dayEquivalent: value,
+                  settings: widget.settings["infoBar"],
+                );
+              },
+              valueListenable: _orbitValue,
             ),
           );
         } else {
