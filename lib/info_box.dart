@@ -17,7 +17,10 @@ class InfoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD:lib/info_box.dart
     print(this.dayEquivalent);
+=======
+>>>>>>> 779855feb81b1d9d430c603447ce91f60274ea41:lib/info_bar.dart
     final double barWidth =
         settings['width'] > MediaQuery.of(context).size.width
         ? MediaQuery.of(context).size.width
@@ -34,7 +37,11 @@ class InfoBox extends StatelessWidget {
       12,
       31,
     ).difference(DateTime(DateTime.now().year, 1, 1)).inDays.toDouble();
+<<<<<<< HEAD:lib/info_box.dart
     print(totalDaysInYear);
+=======
+
+>>>>>>> 779855feb81b1d9d430c603447ce91f60274ea41:lib/info_bar.dart
     return Container(
       color: colorFromString(settings['color']),
       width: barWidth,
@@ -60,7 +67,7 @@ class InfoBox extends StatelessWidget {
               ),
               TableCell(
                 child: Text(
-                  yearEquivalent.toString(),
+                  yearEquivalent.toStringAsPrecision(4),
                   style: cellStyle,
                   textAlign: TextAlign.right,
                 ),

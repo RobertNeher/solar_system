@@ -44,7 +44,7 @@ class SolarSystemPage extends StatefulWidget {
 
 class _SolarSystemPageState extends State<SolarSystemPage>
     with TickerProviderStateMixin {
-  ValueNotifier<double> _orbitValue = ValueNotifier<double>(0);
+  double orbitValue = 0;
   List<Widget> solarSystem = <Widget>[];
   late AnimationController _controller;
 
@@ -71,7 +71,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
 
   @override
   void initState() {
-    _orbitValue = ValueNotifier<double>(0);
+    orbitValue = 0;
     super.initState();
   }
 
@@ -84,11 +84,9 @@ class _SolarSystemPageState extends State<SolarSystemPage>
   void _update() {
     if (_controller.status == AnimationStatus.forward ||
         _controller.status == AnimationStatus.reverse) {
-      _orbitValue = ValueNotifier<double>(
-        (_controller.upperBound - _controller.lowerBound) /
-                widget.settings['animationDuration'] +
-            _orbitValue.value,
-      );
+      orbitValue +=
+          ((_controller.upperBound - _controller.lowerBound) /
+          widget.settings['animationDuration']);
     }
   }
 
@@ -131,7 +129,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                 return CustomPaint(
                   painter: SolarSystemPainter(
                     _controller.value,
-                    _orbitValue.value,
+                    orbitValue,
                     widget.settings,
                     widget.planets,
                   ),
@@ -162,16 +160,10 @@ class _SolarSystemPageState extends State<SolarSystemPage>
               elevation: 0,
             ),
             body: Stack(alignment: Alignment.center, children: solarSystem),
-            bottomSheet: ValueListenableBuilder<double>(
-              builder: (BuildContext context, double value, Widget? child) {
-                print(value);
-                return InfoBox(
-                  yearEquivalent: widget.settings['animationDuration'],
-                  dayEquivalent: value,
-                  settings: widget.settings["infoBar"],
-                );
-              },
-              valueListenable: _orbitValue,
+            bottomSheet: InfoBox(
+              yearEquivalent: widget.settings['animationDuration'],
+              dayEquivalent: _controller.value,
+              settings: widget.settings["infoBar"],
             ),
           );
         } else {
@@ -179,7 +171,6 @@ class _SolarSystemPageState extends State<SolarSystemPage>
             child: Text(
               'Something went wrong!',
               style: TextStyle(
-                // fontFamily: 'Railway',
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
                 color: Colors.red,
