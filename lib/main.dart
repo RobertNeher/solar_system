@@ -1,9 +1,8 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:solar_system/info_bar.dart';
 import 'package:solar_system/src/helper.dart';
 import 'package:solar_system/src/solar_system_painter.dart';
 import 'package:solar_system/src/stellar_background.dart';
@@ -45,7 +44,6 @@ class SolarSystemPage extends StatefulWidget {
 class _SolarSystemPageState extends State<SolarSystemPage>
     with TickerProviderStateMixin {
   double orbitValue = 0;
-  List<Widget> solarSystem = <Widget>[];
   late AnimationController _controller;
 
   Future<void> _loadSettings() async {
@@ -87,6 +85,8 @@ class _SolarSystemPageState extends State<SolarSystemPage>
       orbitValue +=
           ((_controller.upperBound - _controller.lowerBound) /
           widget.settings['animationDuration']);
+    } else if (_controller.status == AnimationStatus.completed) {
+      print('$orbitValue: ${DateFormat('HH:mm:ss').format(DateTime.now())}');
     }
   }
 
@@ -116,29 +116,6 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                 ..repeat(reverse: false)
                 ..addListener(_update);
 
-          solarSystem.add(
-            StellarBackground(
-              windowSize: MediaQuery.of(context).size.height,
-              settings: widget.settings['stellarBackground'],
-            ),
-          );
-          solarSystem.add(
-            AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return CustomPaint(
-                  painter: SolarSystemPainter(
-                    _controller.value,
-                    orbitValue,
-                    widget.settings,
-                    widget.planets,
-                  ),
-                  child: Container(),
-                );
-              },
-            ),
-          );
-
           return Scaffold(
             backgroundColor: colorFromString(
               widget.settings['spaceBackgroundColor'],
@@ -159,7 +136,29 @@ class _SolarSystemPageState extends State<SolarSystemPage>
               backgroundColor: Colors.transparent,
               elevation: 0,
             ),
-            body: Stack(alignment: Alignment.center, children: solarSystem),
+            body: Stack(
+              alignment: Alignment.center,
+              children: [
+                StellarBackground(
+                  windowSize: MediaQuery.of(context).size.height,
+                  settings: widget.settings['stellarBackground'],
+                ),
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return CustomPaint(
+                      painter: SolarSystemPainter(
+                        _controller.value,
+                        orbitValue,
+                        widget.settings,
+                        widget.planets,
+                      ),
+                      child: Container(),
+                    );
+                  },
+                ),
+              ],
+            ),
           );
         } else {
           return const Center(
