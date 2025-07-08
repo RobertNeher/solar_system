@@ -2,20 +2,18 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:solar_system/src/helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SolarSystemPainter extends CustomPainter {
   final double animationValue;
   final double orbitalValue;
   final List<Map<String, dynamic>> planets;
-  final Map<String, dynamic> settings;
-  final List<Set> planetAnimations;
-
+  final Map<String, dynamic> settings; // Liste der Planeten zum Zeichnen
   SolarSystemPainter(
     this.animationValue,
     this.orbitalValue,
     this.settings,
     this.planets,
-    this.planetAnimations,
   );
 
   @override
@@ -49,7 +47,7 @@ class SolarSystemPainter extends CustomPainter {
       ),
     );
 
-    // Draw each planet
+    // Draw each planet on the list
     for (var planet in planets) {
       final double orbitalRadius = planet['orbitalRadius'].toDouble();
       final Color planetColor = colorFromString(planet['color']);
@@ -84,33 +82,6 @@ class SolarSystemPainter extends CustomPainter {
       final double planetY = center.dy + orbitalRadius * math.sin(angle);
       final Offset planetPosition = Offset(planetX, planetY);
       final Paint planetPaint = Paint()..color = planetColor;
-
-      canvas.drawCircle(planetPosition, planet['radius'], planetPaint);
-
-      if (planet['moons'] != null) {
-        final double moonRadius = planet['moon']['radius'].toDouble();
-        final Color moonColor = colorFromString(planet['moon']['color']);
-        final Paint moonPaint = Paint()..color = moonColor;
-
-        // 2. Calculate Moon's angle based on orbital value and speed
-        final double moonAngle =
-            (orbitalValue * planet['moon']['speed'] * 2 * math.pi) %
-            (2 * math.pi);
-
-        // 3. Calculate Moon's position relative to Earth
-        final Offset moonPosition = Offset(
-          planetPosition.dx +
-              planet['moon']['orbitRadius'] * math.cos(moonAngle),
-          planetPosition.dy +
-              planet['moon']['orbitRadius'] * math.sin(moonAngle),
-        );
-
-        // 6. Draw Moon's orbit path (optional, around Earth)
-        // canvas.drawCircle(planetPosition, moonOrbitRadius, orbitPaint);
-
-        // 7. Draw the Moon
-        canvas.drawCircle(moonPosition, moonRadius, moonPaint);
-      }
 
       canvas.drawCircle(planetPosition, planetRadius, planetPaint);
       TextSpan planetName = TextSpan(

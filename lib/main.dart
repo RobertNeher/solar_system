@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:intl/intl.dart';
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,6 +46,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
     with TickerProviderStateMixin {
   double orbitValue = 0;
   late AnimationController _controller;
+  late List<Set> _planetAnimations;
 
   Future<void> _loadSettings() async {
     String pathPrefix = '';
@@ -69,13 +71,35 @@ class _SolarSystemPageState extends State<SolarSystemPage>
 
   @override
   void initState() {
-    orbitValue = 0;
     super.initState();
+    orbitValue = 0;
+    _planetAnimations = [];
+
+    for (Map<String, dynamic> planet in widget.planets) {
+      _planetAnimations.add({
+        planet,
+        Tween<double>(
+          begin: 0,
+          end: 2 * math.pi,
+        ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear)),
+      });
+      if (planet['moons'] != null) {
+        for (Map<String, dynamic> moon in planet['moons']) {
+          _planetAnimations.add({
+            moon,
+            Tween<double>(begin: 0, end: 2 * math.pi).animate(
+              CurvedAnimation(parent: _controller, curve: Curves.linear),
+            ),
+          });
+        }
+      }
+    }
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _planetAnimations.clear();
     super.dispose();
   }
 
@@ -85,8 +109,6 @@ class _SolarSystemPageState extends State<SolarSystemPage>
       orbitValue +=
           ((_controller.upperBound - _controller.lowerBound) /
           widget.settings['animationDuration']);
-    } else if (_controller.status == AnimationStatus.completed) {
-      print('$orbitValue: ${DateFormat('HH:mm:ss').format(DateTime.now())}');
     }
   }
 
@@ -152,6 +174,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                         orbitValue,
                         widget.settings,
                         widget.planets,
+                        _planetAnimations,
                       ),
                       child: Container(),
                     );
