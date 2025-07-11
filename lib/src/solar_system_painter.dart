@@ -88,30 +88,28 @@ class SolarSystemPainter extends CustomPainter {
       canvas.drawCircle(planetPosition, planet['radius'], planetPaint);
 
       if (planet['moons'] != null) {
-        final double moonRadius = planet['moon']['radius'].toDouble();
-        final Color moonColor = colorFromString(planet['moon']['color']);
-        final Paint moonPaint = Paint()..color = moonColor;
+        for (Map<String, dynamic> moon in planet['moons']) {
+          final double moonRadius = moon['radius'].toDouble();
+          final Color moonColor = colorFromString(moon['color']);
+          final Paint moonPaint = Paint()..color = moonColor;
 
-        // 2. Calculate Moon's angle based on orbital value and speed
-        final double moonAngle =
-            (orbitalValue * planet['moon']['speed'] * 2 * math.pi) %
-            (2 * math.pi);
+          // 2. Calculate Moon's angle based on orbital value and speed
+          final double moonAngle =
+              (orbitalValue * moon['speed'] * 2 * math.pi) % (2 * math.pi);
 
-        // 3. Calculate Moon's position relative to Earth
-        final Offset moonPosition = Offset(
-          planetPosition.dx +
-              planet['moon']['orbitRadius'] * math.cos(moonAngle),
-          planetPosition.dy +
-              planet['moon']['orbitRadius'] * math.sin(moonAngle),
-        );
+          // 3. Calculate Moon's position relative to Earth
+          final Offset moonPosition = Offset(
+            planetPosition.dx + moon['orbitRadius'] * math.cos(moonAngle),
+            planetPosition.dy + moon['orbitRadius'] * math.sin(moonAngle),
+          );
 
-        // 6. Draw Moon's orbit path (optional, around Earth)
-        // canvas.drawCircle(planetPosition, moonOrbitRadius, orbitPaint);
+          // 6. Draw Moon's orbit path (optional, around Earth)
+          // canvas.drawCircle(planetPosition, moonOrbitRadius, orbitPaint);
 
-        // 7. Draw the Moon
-        canvas.drawCircle(moonPosition, moonRadius, moonPaint);
+          // 7. Draw the Moon
+          canvas.drawCircle(moonPosition, moonRadius, moonPaint);
+        }
       }
-
       canvas.drawCircle(planetPosition, planetRadius, planetPaint);
       TextSpan planetName = TextSpan(
         text: planet['name'],

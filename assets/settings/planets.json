@@ -23,9 +23,10 @@
             "moons": [
                 {
                     "name": "Moon",
-                    "radius": "",
-                    "speed": 1.0,
-                    "orbitRadius": 16.0
+                    "radius": 3,
+                    "speed": 10.0,
+                    "orbitRadius": 20,
+                    "color": "#ffcccccc"
                 }
             ]
         },
