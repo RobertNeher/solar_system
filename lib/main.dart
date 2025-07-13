@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:solar_system/src/central_star.dart';
 import 'package:solar_system/src/helper.dart';
 import 'package:solar_system/src/solar_system_painter.dart';
 import 'package:solar_system/src/stellar_background.dart';
@@ -47,6 +48,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
   double orbitValue = 0;
   late AnimationController _controller;
   late List<Set> _planetAnimations;
+  int round = 0;
 
   Future<void> _loadSettings() async {
     String pathPrefix = '';
@@ -104,8 +106,11 @@ class _SolarSystemPageState extends State<SolarSystemPage>
   }
 
   void _update() {
-    if (_controller.status == AnimationStatus.forward ||
-        _controller.status == AnimationStatus.reverse) {
+    if (_controller.status == AnimationStatus.completed) {
+      print('Animation completed');
+    }
+    if (_controller.status == AnimationStatus.forward) {
+      print(round++);
       orbitValue +=
           ((_controller.upperBound - _controller.lowerBound) /
           widget.settings['animationDuration']);
@@ -165,6 +170,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                   windowSize: MediaQuery.of(context).size.height,
                   settings: widget.settings['stellarBackground'],
                 ),
+                CentralStar(settings: widget.settings['centralStar']),
                 AnimatedBuilder(
                   animation: _controller,
                   builder: (context, child) {

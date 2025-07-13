@@ -5,7 +5,7 @@
     "font": "Roboto",
     "canvasSize": 600,
     "spaceBackgroundColor": "#ff00004d",
-    "sun": {
+    "centralStar": {
       "name": "Sun",
       "fontSize": 15.0,
       "font": "RobotoFlex",

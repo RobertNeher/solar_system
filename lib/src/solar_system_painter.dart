@@ -22,35 +22,8 @@ class SolarSystemPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Offset center = Offset(size.width / 2, size.height / 2);
 
-    // Central star
-    final TextStyle sunNameStyle = TextStyle(
-      fontFamily: settings['sun']['font'],
-      color: colorFromString(settings['sun']['fontColor']),
-      fontSize: settings['sun']['fontSize'].toDouble(),
-    );
-    final sunPaint = Paint()..color = colorFromString(settings['sun']['color']);
-    canvas.drawCircle(center, settings['sun']['radius'].toDouble(), sunPaint);
-
-    TextSpan sunName = TextSpan(
-      text: settings['sun']['name'],
-      style: sunNameStyle,
-    );
-    TextPainter planetNamePainter = TextPainter(
-      text: sunName,
-      textAlign: TextAlign.left,
-      textDirection: TextDirection.ltr,
-    );
-    planetNamePainter.layout();
-    planetNamePainter.paint(
-      canvas,
-      Offset(
-        center.dx - planetNamePainter.width / 2,
-        center.dy - planetNamePainter.height / 2,
-      ),
-    );
-
     // Draw each planet
-    for (var planet in planets) {
+    for (Map<String, dynamic> planet in planets) {
       final double orbitalRadius = planet['orbitalRadius'].toDouble();
       final Color planetColor = colorFromString(planet['color']);
       final double planetRadius = planet['radius'].toDouble();
