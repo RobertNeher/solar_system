@@ -35,7 +35,23 @@
             "color": "#f0660000",
             "radius": 10.0,
             "orbitalRadius": 130.0,
-            "speed": 0.4
+            "speed": 0.4,
+            "moons": [
+                {
+                    "name": "Phobos",
+                    "radius": 2,
+                    "speed": 20.0,
+                    "orbitRadius": 20,
+                    "color": "#ffcccccc"
+                },
+                {
+                    "name": "Deimos",
+                    "radius": 2,
+                    "speed": 30.0,
+                    "orbitRadius": 25,
+                    "color": "#ffcccccc"
+                }
+            ]
         },
         {
             "name": "Jupiter",
