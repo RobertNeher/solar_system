@@ -1,9 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:solar_system/src/helper.dart';
 
 class SolarSystemPainter extends CustomPainter {
+  final int tickCounter;
   final double animationValue;
   final double orbitalValue;
   final List<Map<String, dynamic>> planets;
@@ -16,11 +18,18 @@ class SolarSystemPainter extends CustomPainter {
     this.settings,
     this.planets,
     this.planetAnimations,
+    this.tickCounter,
   );
 
   @override
   void paint(Canvas canvas, Size size) {
+    final intl.NumberFormat format = intl.NumberFormat('###0');
     final Offset center = Offset(size.width / 2, size.height / 2);
+    final double totalDaysInYear = DateTime(
+      DateTime.now().year,
+      12,
+      31,
+    ).difference(DateTime(DateTime.now().year, 1, 1)).inDays.toDouble();
 
     // Draw each planet
     for (Map<String, dynamic> planet in planets) {
@@ -38,11 +47,6 @@ class SolarSystemPainter extends CustomPainter {
         color: colorFromString(settings['infoBar']['fontColor']),
         fontSize: settings['infoBar']['fontSize'].toDouble(),
       );
-      final double totalDaysInYear = DateTime(
-        DateTime.now().year,
-        12,
-        31,
-      ).difference(DateTime(DateTime.now().year, 1, 1)).inDays.toDouble();
 
       if (settings['orbits']['visible']) {
         // Draw orbits
@@ -57,7 +61,6 @@ class SolarSystemPainter extends CustomPainter {
       final double planetY = center.dy + orbitalRadius * math.sin(angle);
       final Offset planetPosition = Offset(planetX, planetY);
       final Paint planetPaint = Paint()..color = planetColor;
-
       canvas.drawCircle(planetPosition, planet['radius'], planetPaint);
 
       if (planet['moons'] != null) {
@@ -111,14 +114,12 @@ class SolarSystemPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       );
       infoPainter.layout();
-      infoPainter.paint(canvas, Offset(size.width - 225, size.height - 50));
+      infoPainter.paint(canvas, Offset(size.width - 250, size.height - 50));
 
       TextSpan infoNumbers = TextSpan(
         text:
-            '${settings["animationDuration"]}\n' +
-            '${(settings["animationDuration"] / totalDaysInYear).toStringAsPrecision(5)}\n' +
-            // '${(orbitalValue * settings["animationDuration"] / totalDaysInYear).toStringAsPrecision(5)}',
-            '${(orbitalValue * totalDaysInYear).toStringAsPrecision(5)}',
+            '$tickCounter::${(2 * math.pi / settings["animationDuration"]).toStringAsFixed(3)}\n' +
+            '${(orbitalValue * (2 * math.pi / totalDaysInYear)).toStringAsFixed(3)}\n',
         style: infoStyle,
       );
       infoPainter = TextPainter(
@@ -127,11 +128,11 @@ class SolarSystemPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       );
       infoPainter.layout();
-      infoPainter.paint(canvas, Offset(size.width - 150, size.height - 50));
+      infoPainter.paint(canvas, Offset(size.width - 155, size.height - 50));
 
       infoName = TextSpan(
-        text:
-            'millseconds = Earth year\nmilliseconds an Earth day \nEarth day of year',
+        text: ' ',
+        // 'millseconds = Earth year\nmilliseconds an Earth day \nEarth day of year',
         style: infoStyle,
       );
       infoPainter = TextPainter(
@@ -140,7 +141,7 @@ class SolarSystemPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       );
       infoPainter.layout();
-      infoPainter.paint(canvas, Offset(size.width - 100, size.height - 50));
+      infoPainter.paint(canvas, Offset(size.width - 120, size.height - 50));
     }
   }
 

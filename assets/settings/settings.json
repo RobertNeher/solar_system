@@ -2,6 +2,8 @@
   "version": "0.1.0",
   "settings": {
     "title": "Solar System simulation",
+    "debugMode": true,
+    "animationDuration": 1000,
     "font": "Roboto",
     "canvasSize": 600,
     "spaceBackgroundColor": "#ff00004d",
@@ -37,8 +39,6 @@
       "font": "Roboto",
       "fontSize": 10,
       "fontColor": "#ffffffff"
-    },
-    "debugMode": true,
-    "animationDuration": 3000
+    }
   }
 }

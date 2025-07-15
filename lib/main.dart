@@ -45,6 +45,7 @@ class SolarSystemPage extends StatefulWidget {
 
 class _SolarSystemPageState extends State<SolarSystemPage>
     with TickerProviderStateMixin {
+  int tickCounter = 0;
   double orbitValue = 0;
   late AnimationController _controller;
   late List<Set> _planetAnimations;
@@ -82,7 +83,9 @@ class _SolarSystemPageState extends State<SolarSystemPage>
         planet,
         Tween<double>(
           begin: 0,
-          end: 2 * math.pi,
+          end: 365,
+          // begin: 0,
+          // end: 2 * math.pi,
         ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear)),
       });
       if (planet['moons'] != null) {
@@ -106,14 +109,23 @@ class _SolarSystemPageState extends State<SolarSystemPage>
   }
 
   void _update() {
-    if (_controller.status == AnimationStatus.completed) {
-      print('Animation completed');
-    }
+    // if (_controller.status == AnimationStatus.completed) {
+    //   print('Animation completed');
+    // }
     if (_controller.status == AnimationStatus.forward) {
-      print(round++);
-      orbitValue +=
-          ((_controller.upperBound - _controller.lowerBound) /
-          widget.settings['animationDuration']);
+      if (_controller.value <= _controller.upperBound) {
+        orbitValue +=
+            ((_controller.upperBound - _controller.lowerBound) /
+            widget.settings['animationDuration']);
+      } else {
+        tickCounter = 0;
+        // orbitValue = 0;
+        _controller.reset();
+      }
+      tickCounter++;
+      // orbitValue +=
+      //     ((_controller.upperBound - _controller.lowerBound) /
+      //     widget.settings['animationDuration']);
     }
   }
 
@@ -181,6 +193,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                         widget.settings,
                         widget.planets,
                         _planetAnimations,
+                        tickCounter,
                       ),
                       child: Container(),
                     );
