@@ -1,8 +1,10 @@
 import 'dart:convert';
-import 'package:intl/intl.dart';
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:solar_system/src/central_star.dart';
 import 'package:solar_system/src/helper.dart';
 import 'package:solar_system/src/solar_system_painter.dart';
 import 'package:solar_system/src/stellar_background.dart';
@@ -43,8 +45,11 @@ class SolarSystemPage extends StatefulWidget {
 
 class _SolarSystemPageState extends State<SolarSystemPage>
     with TickerProviderStateMixin {
+  int tickCounter = 0;
   double orbitValue = 0;
   late AnimationController _controller;
+  late List<Set> _planetAnimations;
+  int round = 0;
 
   Future<void> _loadSettings() async {
     String pathPrefix = '';
@@ -69,24 +74,58 @@ class _SolarSystemPageState extends State<SolarSystemPage>
 
   @override
   void initState() {
-    orbitValue = 0;
     super.initState();
+    orbitValue = 0;
+    _planetAnimations = [];
+
+    for (Map<String, dynamic> planet in widget.planets) {
+      _planetAnimations.add({
+        planet,
+        Tween<double>(
+          begin: 0,
+          end: 365,
+          // begin: 0,
+          // end: 2 * math.pi,
+        ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear)),
+      });
+      if (planet['moons'] != null) {
+        for (Map<String, dynamic> moon in planet['moons']) {
+          _planetAnimations.add({
+            moon,
+            Tween<double>(begin: 0, end: 2 * math.pi).animate(
+              CurvedAnimation(parent: _controller, curve: Curves.linear),
+            ),
+          });
+        }
+      }
+    }
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _planetAnimations.clear();
     super.dispose();
   }
 
   void _update() {
-    if (_controller.status == AnimationStatus.forward ||
-        _controller.status == AnimationStatus.reverse) {
-      orbitValue +=
-          ((_controller.upperBound - _controller.lowerBound) /
-          widget.settings['animationDuration']);
-    } else if (_controller.status == AnimationStatus.completed) {
-      print('$orbitValue: ${DateFormat('HH:mm:ss').format(DateTime.now())}');
+    // if (_controller.status == AnimationStatus.completed) {
+    //   print('Animation completed');
+    // }
+    if (_controller.status == AnimationStatus.forward) {
+      if (_controller.value <= _controller.upperBound) {
+        orbitValue +=
+            ((_controller.upperBound - _controller.lowerBound) /
+            widget.settings['animationDuration']);
+      } else {
+        tickCounter = 0;
+        // orbitValue = 0;
+        _controller.reset();
+      }
+      tickCounter++;
+      // orbitValue +=
+      //     ((_controller.upperBound - _controller.lowerBound) /
+      //     widget.settings['animationDuration']);
     }
   }
 
@@ -143,6 +182,7 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                   windowSize: MediaQuery.of(context).size.height,
                   settings: widget.settings['stellarBackground'],
                 ),
+                CentralStar(settings: widget.settings['centralStar']),
                 AnimatedBuilder(
                   animation: _controller,
                   builder: (context, child) {
@@ -152,6 +192,8 @@ class _SolarSystemPageState extends State<SolarSystemPage>
                         orbitValue,
                         widget.settings,
                         widget.planets,
+                        _planetAnimations,
+                        tickCounter,
                       ),
                       child: Container(),
                     );
